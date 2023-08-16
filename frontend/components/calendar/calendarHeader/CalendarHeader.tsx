@@ -4,10 +4,11 @@ import { FOLDERS_ROUTE, SETTINGS_ROUTE } from "../../../variables/variables";
 
 type Props = {
     date: Date;
-    setDate: () => void;
+    setDate: (date: Date) => void;
+    setCalendarPopup: () => void;
 }
 
-const CalendarHeader: React.FC<Props> = ({date, setDate}) => {
+const CalendarHeader: React.FC<Props> = ({date, setDate, setCalendarPopup}) => {
     const month = date.getMonth()
     const year = date.getFullYear()
     const getMonthName = (num: number) => {
@@ -56,7 +57,7 @@ const CalendarHeader: React.FC<Props> = ({date, setDate}) => {
                     style={styles.calendarHeader__img}
                 />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => console.log('calendar')}>
+            <TouchableOpacity onPress={setCalendarPopup}>
                 <Image
                     source={require('./calendar.png')} 
                     style={styles.calendarHeader__img}
