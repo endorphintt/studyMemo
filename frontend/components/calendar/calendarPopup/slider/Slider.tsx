@@ -24,14 +24,14 @@ const Slider: React.FC<Props> = ({year, setYear, month, setMonth}) => {
     useLayoutEffect(() => {
         const selectedIndex = years.findIndex((item) => year === item);
         const scrollToY = selectedIndex * 45; 
-        if(scrollViewRef.current) {
+        
             scrollViewRef.current.scrollTo({ y: scrollToY, animated: true });
-        } 
+      
         const selectedMonthIndex = months.findIndex((item) => month === item.num);
         const scrollToMonthY = selectedIndex * 45; 
-        if(scrollViewMonthsRef.current) {
+        
             scrollViewMonthsRef.current.scrollTo({ y: scrollToY, animated: true });
-        } 
+        
       }, []);   
     return (
         <View style={styles.slider}>
@@ -64,12 +64,14 @@ const Slider: React.FC<Props> = ({year, setYear, month, setMonth}) => {
                 }}
             >
                 {months.map((item, index) => (
-                    <Text key={index} style={[styles.monthText, item.num === month && styles.selectedMonth]}>
+                    <Text 
+                        
+                        style={[styles.monthText, item.num === month && styles.selectedMonth]}
+                    >
                         {item.name}
                     </Text>
                 ))}
             </ScrollView>
-            <View style={styles.poput__line}></View>
         </View>
     )
 }
@@ -112,13 +114,6 @@ const styles = StyleSheet.create({
     selectedMonth: {
         color: '#73E2EA'
     },
-    poput__line: {
-        height: 45,
-        width: '100%',
-        backgroundColor: 'rgba(111, 111, 111, 0.3 )',
-        position: 'absolute',
-        top: 125
-    }
 })
 
 export default Slider;

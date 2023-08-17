@@ -8,6 +8,7 @@ type Props = {
 
 const Nums: React.FC<Props> = ({setNumber, num, nums}) => {
     const week: string[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+    
     return (
         <View style={styles.nums}>
             <View style={styles.nums__header}>       
