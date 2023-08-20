@@ -40,8 +40,6 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
     week.push(day);
     } 
 
-    console.log(week)
-
     return (
         <View style={{left: '-300%' , ...styles.swiper}}>
             {/* {weeks.map((week: Date[]) => 

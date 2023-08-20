@@ -1,5 +1,5 @@
-import { useEffect, useRef, useLayoutEffect } from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native'
+import { useEffect, useRef, useLayoutEffect, useState } from 'react';
+import { View, ScrollView, Text, StyleSheet, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
 
 type Props = {
     year: number;
@@ -9,111 +9,141 @@ type Props = {
 }
 
 const Slider: React.FC<Props> = ({year, setYear, month, setMonth}) => {
+    const yearsRef = useRef<ScrollView>(null)
+    const monthsRef = useRef<ScrollView>(null)
+
     const years = Array.from({ length: 100 }, (_, index) => 2020 + index);
     const months = [
-                    {num: -1, name: ''}, {num: -1, name: ''}, {num: -1, name: ''}, 
-                    {num: 0, name: 'January'}, {num: 1, name: 'February'}, {num: 2, name: 'March'}, {num: 3, name: 'April'},
-                    {num: 4, name: 'May'}, {num: 5, name: 'June'}, {num: 6, name: 'July'}, {num: 7, name: 'August'},
-                    {num: 8, name: 'September'}, {num: 9, name: 'October'}, {num: 10, name: 'November'}, {num: 11, name: 'December'},
-                    {num: -1, name: ''}, {num: -1, name: ''}, {num: -1, name: ''},
-                ]
+        {name: '', index: -3}, {name: '', index: -2}, {name: '', index: -1}, 
+        {name: 'January', index: 0}, {name: 'February', index: 1}, {name: 'March', index: 2}, {name: 'April', index: 3},
+        {name: 'May', index: 4}, {name: 'June', index: 5}, {name: 'July', index: 6}, {name: 'August', index: 7},
+        {name: 'September', index: 8}, {name: 'October', index: 9}, {name: 'November', index: 10}, {name: 'December', index: 11},
+        {name: '', index: 12}, {name: '', index: 13}, {name: '', index: 14}, 
+    ]
 
-    const scrollViewRef = useRef<ScrollView | null>(null);
-    const scrollViewMonthsRef = useRef<ScrollView | null>(null);
+    const onMonthsLayout = () => {
+        const selectedMonthsIndex = months.findIndex((item) => item.index === month)
+        const scrollMonthsToY = selectedMonthsIndex * 45 - 3 * 45 // 4*45 because selected el should be in centre
+        monthsRef.current?.scrollTo({y: scrollMonthsToY, animated: true})
+    }
     
-    useLayoutEffect(() => {
-        const selectedIndex = years.findIndex((item) => year === item);
-        const scrollToY = selectedIndex * 45; 
-        
-            scrollViewRef.current.scrollTo({ y: scrollToY, animated: true });
-      
-        const selectedMonthIndex = months.findIndex((item) => month === item.num);
-        const scrollToMonthY = selectedIndex * 45; 
-        
-            scrollViewMonthsRef.current.scrollTo({ y: scrollToY, animated: true });
-        
-      }, []);   
+    const onYearsLayout = () => {
+        const selectedYearsIndex = years.findIndex((item) => item === year)
+        const scrollYearsToY = selectedYearsIndex * 45 - 3 * 45 // 4*45 because selected el should be in centre
+        yearsRef.current?.scrollTo({y: scrollYearsToY, animated: true})
+    }
+
+    const monthsHandleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const yOffset = event.nativeEvent.contentOffset.y;
+
+        months.forEach(mon => {
+            if(yOffset >= mon.index * 45 - 15  && yOffset < mon.index * 45 + 30) {
+                setMonth(mon.index)
+            }
+        })
+    }
+
+    const yearsHandleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const yOffset = event.nativeEvent.contentOffset.y;
+
+        years.forEach(y => {
+            if(yOffset >= ( y - 2023 ) * 45 - 15 && yOffset < ( y - 2023 ) * 45 + 30) {
+                setYear(y)
+            }
+        })
+    }
+
+    const onScrollMonthsEnd = () => {
+        const scrollMonthsToY = month * 45
+        monthsRef.current?.scrollTo({y: scrollMonthsToY})
+    }
+
+    const onScrollYearsEnd = () => {
+        const scrollYearsToY = ( year - 2023 ) * 45 
+        yearsRef.current?.scrollTo({y: scrollYearsToY})
+    }
+
     return (
         <View style={styles.slider}>
             <ScrollView
-                ref={scrollViewRef}
+                onScroll={monthsHandleScroll}
+                style={styles.slider__items}
+                ref={monthsRef}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.yearsContainer}
-                onScroll={(event) => {
-                    const offsetY = event.nativeEvent.contentOffset.y
-                    const visibleHeight = event.nativeEvent.layoutMeasurement.height;
-                    const index = Math.round((offsetY + visibleHeight / 2) / 46)
-                    setYear(years[index])
-                }}
-            >
-                {years.map((item, index) => (
-                    <Text key={index} style={[styles.yearText, year === item && styles.selectedYear]}>
-                        {item}
-                    </Text>
-                ))}
+                onLayout={onMonthsLayout}
+                scrollEventThrottle={4}
+                onScrollEndDrag={onScrollMonthsEnd}
+            >   
+                {months.map((mon) => 
+                    <View style={styles.slider__item} key={mon.index}>
+                        <Text style={[styles.slider__monthText, month === mon.index && styles.slider__selectedMonth]}>{mon.name? mon.name: ''}</Text> 
+                    </View>
+                )}
             </ScrollView>
             <ScrollView
-                ref={scrollViewMonthsRef}
+                style={styles.slider__items}
+                ref={yearsRef}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={styles.monthsContainer}
-                onScroll={(event) => {
-                    const offsetY = event.nativeEvent.contentOffset.y
-                    const visibleHeight = event.nativeEvent.layoutMeasurement.height;
-                    const index = Math.round((offsetY + visibleHeight / 2) / 46)
-                    setMonth(months[index].num)
-                }}
-            >
-                {months.map((item, index) => (
-                    <Text 
-                        
-                        style={[styles.monthText, item.num === month && styles.selectedMonth]}
-                    >
-                        {item.name}
-                    </Text>
-                ))}
+                onLayout={onYearsLayout}
+                onScroll={yearsHandleScroll}
+                scrollEventThrottle={4}
+                onScrollEndDrag={onScrollYearsEnd}
+            >   
+                {years.map((y) => 
+                    <View style={styles.slider__item} key={y}>
+                        <Text style={[styles.slider__yearText, year === y && styles.slider__selectedYear]}>{y}</Text> 
+                    </View>
+                )}
             </ScrollView>
+            <View style={styles.poput__line}></View>
         </View>
+       
     )
 }
 
 const styles = StyleSheet.create({
     slider: {
         flexDirection: 'row',
-        height: '100%',
-        width: '100%',
         position: 'relative'
     },
-    yearsContainer: {
-        width: '50%',
-        alignItems: 'center',
-        zIndex: 2
+    slider__items: {
+        width: '50%'
     },
-    selectedYear: {
-        color: '#73E2EA'
-    },
-    yearText: {
-        paddingLeft: 40,
-        fontSize: 20,
+    slider__item: {
         height: 45,
-        color: 'gray',
+        width: '100%',
         justifyContent: 'center',
         alignItems: 'center'
     },
-    monthsContainer: {
-        width: '50%',
-        alignItems: 'center',
-        zIndex: 2
-    },
-    monthText: {
-        fontSize: 20,
+    poput__line: {
         height: 45,
-        color: 'gray',
+        width: '100%',
+        backgroundColor: 'rgba(111, 111, 111, 0.3 )',
+        position: 'absolute',
+        top: 125
+    },
+    slider__yearText: {
+        padding: 0,
+        margin: 0,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingBottom: 15,
+        fontSize: 20
     },
-    selectedMonth: {
-        color: '#73E2EA'
+    slider__selectedYear: {
+        color: 'blue'
     },
+    slider__monthText: {
+        padding: 0,
+        margin: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 15,
+        fontSize: 20
+    },
+    slider__selectedMonth: {
+        color: 'blue'
+    }
 })
 
 export default Slider;

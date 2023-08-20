@@ -80,8 +80,8 @@ const CalendarPopup: React.FC<Props> = ({date, setDate, display, setCalendarPopu
                 style={styles.poput__header}
                 onPress={() => setMenu(!menu)}
             >
-                <Text style={styles.poput__text}>{months.filter(mon => mon.i === month)[0].name}</Text>
-                <Text style={styles.poput__text}>{year}</Text>
+                <Text style={styles.poput__text}>{months.filter(mon => mon.i === month)[0]?.name}</Text>
+                <Text style={styles.poput__text}>{year? year : ''}</Text>
                 <View style={{transform: [{rotate: menu? '0deg' : '90deg'}], ...styles.popup__point_container}}>
                     <Text style={styles.popup__point}>{'>'}</Text>
                 </View>
