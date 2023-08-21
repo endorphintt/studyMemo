@@ -52,97 +52,99 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
         setPosition(-400)
     }
 
-    const panResponder = PanResponder.create({
-        onStartShouldSetPanResponderCapture: () => !isSwiping,
-        onMoveShouldSetPanResponderCapture: () => !isSwiping,
-        onPanResponderMove: (_, gestureState) => {
-          if (gestureState.dx < -50 && position > -800) {
-            // Свайп вліво
-            if (!isSwiping) {
-              setIsSwiping(true);
-              setPosition(position - 100);
-            }
-          } else if (gestureState.dx > 50 && position < 0) {
-            // Свайп вправо
-            if (!isSwiping) {
-              setIsSwiping(true);
-              setPosition(position + 100);
-            }
-          }
-        },
-        onPanResponderRelease: () => {
-          setIsSwiping(false);
-        },
-      });   
+    const swipeRight = () => {
+        if(position > -800){
+            setPosition(position - 100)
+        }
+    }
+
+    const swipeLeft = () => {
+        if(position < 0){
+            setPosition(position + 100)
+        }
+    }
 
     return (
-        <View
-            style={{left: position.toString() + '%' , ...styles.swiper} as any} 
-            {...panResponder.panHandlers}  
-        >
-            {weeks.map((week: Date[]) => 
-                <View style={styles.swiper__week}
-                    key={week[0].toString()}
-                >
-                    <TouchableOpacity style={styles.swiper__item}
-                        onPress={() => onNumPress(week[0])}
+        <View>
+            <TouchableOpacity
+                onPress={swipeRight}
+                style={styles.nextWeek}
+            >
+                <Text style={styles.nextWeek__text}>next week {'>'}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                onPress={swipeLeft}
+                style={styles.previousWeek}
+            >
+                <Text style={styles.previousWeek__text}>{'<'} previous week</Text>
+            </TouchableOpacity>
+            <View
+                style={{left: position.toString() + '%' , ...styles.swiper} as any}  
+            >
+                {weeks.map((week: Date[]) => 
+                    <View style={styles.swiper__week}
+                        key={week[0].toString()}
                     >
-                        <Text style={styles.swiper__title}>Mon</Text>
-                        <View style={[styles.swiper__day, week[0].getDate() === date.getDate() && styles.swiper__day_active]}>
-                            <Text>{week[0].getDate()}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.swiper__item}
-                        onPress={() => onNumPress(week[1])}
-                    >
-                        <Text style={styles.swiper__title}>Tue</Text>
-                        <View style={[styles.swiper__day, week[1].getDate() === date.getDate() && styles.swiper__day_active]}>
-                            <Text>{week[1].getDate()}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.swiper__item}
-                        onPress={() => onNumPress(week[2])}
-                    >
-                        <Text style={styles.swiper__title}>Wed</Text>
-                        <View style={[styles.swiper__day, week[2].getDate() === date.getDate() && styles.swiper__day_active]}>
-                            <Text>{week[2].getDate()}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.swiper__item}
-                        onPress={() => onNumPress(week[3])}
-                    >
-                        <Text style={styles.swiper__title}>Thu</Text>
-                        <View style={[styles.swiper__day, week[3].getDate() === date.getDate() && styles.swiper__day_active]}>
-                            <Text>{week[3].getDate()}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.swiper__item}
-                        onPress={() => onNumPress(week[4])}
-                    >
-                        <Text style={styles.swiper__title}>Fri</Text>
-                        <View style={[styles.swiper__day, week[4].getDate() === date.getDate() && styles.swiper__day_active]}>
-                            <Text>{week[4].getDate()}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.swiper__item}
-                        onPress={() => onNumPress(week[5])}
-                    >
-                        <Text style={styles.swiper__title}>Sat</Text>
-                        <View style={[styles.swiper__day, week[5].getDate() === date.getDate() && styles.swiper__day_active]}>
-                            <Text>{week[5].getDate()}</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.swiper__item}
-                        onPress={() => onNumPress(week[6])}
-                    >
-                        <Text style={styles.swiper__title}>Sun</Text>
-                        <View style={[styles.swiper__day, week[6].getDate() === date.getDate() && styles.swiper__day_active]}>
-                            <Text>{week[6].getDate()}</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            )}
-        </View >
+                        <TouchableOpacity style={styles.swiper__item}
+                            onPress={() => onNumPress(week[0])}
+                        >
+                            <Text style={styles.swiper__title}>Mon</Text>
+                            <View style={[styles.swiper__day, week[0].getDate() === date.getDate() && styles.swiper__day_active]}>
+                                <Text>{week[0].getDate()}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.swiper__item}
+                            onPress={() => onNumPress(week[1])}
+                        >
+                            <Text style={styles.swiper__title}>Tue</Text>
+                            <View style={[styles.swiper__day, week[1].getDate() === date.getDate() && styles.swiper__day_active]}>
+                                <Text>{week[1].getDate()}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.swiper__item}
+                            onPress={() => onNumPress(week[2])}
+                        >
+                            <Text style={styles.swiper__title}>Wed</Text>
+                            <View style={[styles.swiper__day, week[2].getDate() === date.getDate() && styles.swiper__day_active]}>
+                                <Text>{week[2].getDate()}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.swiper__item}
+                            onPress={() => onNumPress(week[3])}
+                        >
+                            <Text style={styles.swiper__title}>Thu</Text>
+                            <View style={[styles.swiper__day, week[3].getDate() === date.getDate() && styles.swiper__day_active]}>
+                                <Text>{week[3].getDate()}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.swiper__item}
+                            onPress={() => onNumPress(week[4])}
+                        >
+                            <Text style={styles.swiper__title}>Fri</Text>
+                            <View style={[styles.swiper__day, week[4].getDate() === date.getDate() && styles.swiper__day_active]}>
+                                <Text>{week[4].getDate()}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.swiper__item}
+                            onPress={() => onNumPress(week[5])}
+                        >
+                            <Text style={styles.swiper__title}>Sat</Text>
+                            <View style={[styles.swiper__day, week[5].getDate() === date.getDate() && styles.swiper__day_active]}>
+                                <Text>{week[5].getDate()}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.swiper__item}
+                            onPress={() => onNumPress(week[6])}
+                        >
+                            <Text style={styles.swiper__title}>Sun</Text>
+                            <View style={[styles.swiper__day, week[6].getDate() === date.getDate() && styles.swiper__day_active]}>
+                                <Text>{week[6].getDate()}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                )}
+            </View >
+        </View>
     )
 }
 
@@ -156,7 +158,7 @@ const styles = StyleSheet.create({
     },
     swiper__week: {
         flexDirection: 'row',
-        height: 50,
+        height: 80,
         alignItems: 'center',
         width: '14.28%',
     },
@@ -181,7 +183,23 @@ const styles = StyleSheet.create({
     },
     swiper__day_active: {
         backgroundColor: '#D9D9D9',
-    }
+    },
+    nextWeek: {
+        position: 'absolute',
+        right: 10,
+        top: -5
+    },
+    nextWeek__text: {
+        color: '#D9D9D9'
+    },
+    previousWeek: {
+        position: 'absolute',
+        left: 10,
+        top: -5
+    },
+    previousWeek__text: {
+        color: '#D9D9D9'
+    },
 })
 
 export default CalendarSwiper;
