@@ -6,7 +6,12 @@ import CalendarContent from "./calendarContent/CalendarContent";
 import CalendarPopup from "./calendarPopup/CalendarPopup";
 
 const Calendar: React.FC = () => {
-    const [date, setDate] = useState<Date>(new Date); 
+    const unixTimestamp = Date.now();
+    const timezoneOffsetInMinutes = new Date().getTimezoneOffset();
+    const timezoneOffsetMilliseconds = timezoneOffsetInMinutes * 60 * 1000;
+    const currentDateInYourTimezone = new Date(unixTimestamp - timezoneOffsetMilliseconds);
+
+    const [date, setDate] = useState<Date>(currentDateInYourTimezone); 
     const [calendarPopup, setCalendarPopup] = useState<boolean>(false)
 
     return (

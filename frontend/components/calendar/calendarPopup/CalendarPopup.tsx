@@ -42,21 +42,21 @@ const CalendarPopup: React.FC<Props> = ({date, setDate, display, setCalendarPopu
     if(firstDayOfWeek === 0){
         for(let i = 1; i < 43; i++){
             if(i <= 6){
-                nums.push(0)
+                nums.push(-i)
             } else if (i >= firstDayOfWeek && i < 7 + daysInMonth ){
                 nums.push(i - 6)
             } else {
-                nums.push(0)
+                nums.push(-i)
             }
         }
     } else {
         for(let i = 1; i < 43; i++){
             if(i < firstDayOfWeek){
-                nums.push(0)
+                nums.push(-i)
             } else if (i >= firstDayOfWeek && i < firstDayOfWeek + daysInMonth ){
                 nums.push(i - firstDayOfWeek + 1)
             } else {
-                nums.push(0)
+                nums.push(-i)
             }
         }
     }   

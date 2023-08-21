@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Button, TouchableOpacity, Image } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { FOLDERS_ROUTE, SETTINGS_ROUTE } from "../../../variables/variables";
 
 type Props = {
@@ -7,6 +7,10 @@ type Props = {
     setDate: (date: Date) => void;
     setCalendarPopup: () => void;
 }
+
+type RootStackParamList = {
+    // params
+};
 
 const CalendarHeader: React.FC<Props> = ({date, setDate, setCalendarPopup}) => {
     const month = date.getMonth()
@@ -39,19 +43,19 @@ const CalendarHeader: React.FC<Props> = ({date, setDate, setCalendarPopup}) => {
                 return 'Dec';
         }
     }
-    const nav = useNavigation()
+    const nav = useNavigation<NavigationProp<RootStackParamList>>()
 
     return(
         <View style={styles.calendarHeader}>
             <Text style={styles.calendarHeader__month}>{getMonthName(month)}</Text>
             <Text style={styles.calendarHeader__year}>{year}</Text>
-            <TouchableOpacity onPress={() => nav.navigate(FOLDERS_ROUTE, {})}>
+            <TouchableOpacity onPress={() => nav.navigate(FOLDERS_ROUTE)}>
                 <Image
                     source={require('./folders.png')} 
                     style={styles.calendarHeader__img}
                 />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => nav.navigate(SETTINGS_ROUTE, {})}>
+            <TouchableOpacity onPress={() => nav.navigate(SETTINGS_ROUTE)}>
                 <Image
                     source={require('./settings.png')} 
                     style={styles.calendarHeader__img}

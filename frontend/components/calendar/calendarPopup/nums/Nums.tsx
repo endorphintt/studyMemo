@@ -8,20 +8,21 @@ type Props = {
 
 const Nums: React.FC<Props> = ({setNumber, num, nums}) => {
     const week: string[] = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-    
+
     return (
         <View style={styles.nums}>
             <View style={styles.nums__header}>       
-                {week.map(day => <Text style={styles.nums__day}>{day}</Text>)}
+                {week.map(day => <Text key={day} style={styles.nums__day}>{day}</Text>)}
             </View>
             <View style={styles.nums__items}>
                 {nums.map((n) => {
                     return(
                         <TouchableOpacity
+                            key={n.toString()}
                             style={n === num? styles.nums__item_active : styles.nums__item} 
-                            onPress={() => {if(n != 0){setNumber(n)}}}
+                            onPress={() => {if(n > 0){setNumber(n)}}}
                         >
-                            <Text style={styles.nums__item_text}>{n != 0 ? n : ''}</Text>
+                            <Text style={styles.nums__item_text}>{n > 0 ? n : ''}</Text>
                         </TouchableOpacity>
                     )
                 })}
