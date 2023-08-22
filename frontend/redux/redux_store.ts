@@ -5,6 +5,9 @@ let reducers = combineReducers({
     eventComponent: eventReducer,
 })
 
+export type reducers = ReturnType<typeof reducers>
+
 let store = createStore(reducers)
+
 
 export default store;

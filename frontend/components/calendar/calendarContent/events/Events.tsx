@@ -17,11 +17,11 @@ const Events: React.FC<Props> = ({date}) => {
 
     const activeItems = useSelector((state: reducers) => state.eventComponent.eventActiveItems)
 
-    console.log('active:', activeItems)
-
     return (
         <View style={styles.events}>
-            <Text>Events</Text>
+            <Text>{activeItems.map((e) => 
+                <Text>{e.title}</Text>
+            )}</Text>
         </View>
     )
 }

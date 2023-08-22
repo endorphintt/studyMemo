@@ -3,6 +3,7 @@ import { EVENT_ACTION } from "./types";
 const UPDATE_DATE = 'UPDATE_DATE'
 
 const someDate = new Date()
+console.log(new Date(someDate.getTime() + 24 * 60 * 60 * 1000))
 
 const initilState = {
     eventItems: [
@@ -51,6 +52,51 @@ const initilState = {
             color: 'blue',
             description: '1 litr'
         },
+        {
+            id: '7',
+            date: new Date(someDate.getTime() + 24 * 60 * 60 * 1000),
+            title: 'THU',
+            start: '11:45',
+            time: '60',
+            color: 'blue',
+            description: '1 litr'
+        },
+        {
+            id: '8',
+            date: someDate,
+            title: 'Tuesday',
+            start: '11:45',
+            time: '60',
+            color: 'blue',
+            description: '1 litr'
+        },
+        {
+            id: '8',
+            date: someDate,
+            title: 'Tuesday',
+            start: '11:45',
+            time: '60',
+            color: 'blue',
+            description: '1 litr'
+        },
+        {
+            id: '9',
+            date: someDate,
+            title: 'Tuesday',
+            start: '11:45',
+            time: '60',
+            color: 'blue',
+            description: '1 litr'
+        },
+        {
+            id: '10',
+            date: someDate,
+            title: 'Tuesday',
+            start: '11:45',
+            time: '60',
+            color: 'blue',
+            description: '1 litr'
+        },
     ],
     eventActiveItems: [
         {
@@ -74,23 +120,24 @@ const initilState = {
     ]
 }
 
-const eventReducer = (state = initilState, action: { type: string, activeDate: Date}) => {
-    let newState: any;
+const eventReducer = (state = initilState, action: { type: string, activeDate: Date }) => {
     switch(action.type) {
         case UPDATE_DATE:
-            newState = {...state, eventActiveItems: []}
-            state.eventItems.forEach((item) => {
-                if( 
-                    item.date.getFullYear() === action.activeDate.getFullYear()  &&
-                    item.date.getDate() === action.activeDate.getDate() &&
-                    item.date.getMonth() === action.activeDate.getMonth()             
-                ) {
-                    newState.eventActiveItems.push(item)
-                }
-            })
-            return newState
+            const newEventActiveItems = state.eventItems.filter(item => {
+                const itemDate = new Date(item.date);
+                return (
+                    itemDate.getFullYear() === action.activeDate.getFullYear() &&
+                    itemDate.getDate() === action.activeDate.getDate() &&
+                    itemDate.getMonth() === action.activeDate.getMonth()
+                );
+            });
+
+            return {
+                ...state,
+                eventActiveItems: newEventActiveItems,
+            };
         default: 
-            return state
+            return state;
     }
 }
 
