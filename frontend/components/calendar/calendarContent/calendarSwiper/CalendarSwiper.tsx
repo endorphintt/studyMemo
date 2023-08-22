@@ -65,7 +65,7 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
     }
 
     return (
-        <View>
+        <View style={styles.swiper__container}>
             <TouchableOpacity
                 onPress={swipeRight}
                 style={styles.nextWeek}
@@ -149,6 +149,9 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
 }
 
 const styles = StyleSheet.create({
+    swiper__container: {
+        height: 120
+    },
     swiper: {
         position: 'absolute',
         top: 0,

@@ -1,7 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext } from 'react'
 import Intro from './components/intro/Intro';
 import AppRouter from './components/appRouter/AppRouter';
+import { Provider } from 'react-redux';
+import store from './redux/redux_store';
+
+export const MyContext = createContext(null)
 
 export default function App() {
   const [intro, setIntro] = useState(true)
@@ -11,6 +15,7 @@ export default function App() {
   }, []);
 
   return (
+    <Provider store={store}>
       <View 
         style={{
           ...styles.container,
@@ -22,6 +27,7 @@ export default function App() {
           <AppRouter/>
         }
       </View>
+    </Provider>
   );
 }
 
