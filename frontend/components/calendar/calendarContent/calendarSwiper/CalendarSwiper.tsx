@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import { View, Text, StyleSheet, PanResponder, TouchableOpacity} from 'react-native'
+import { useSelector } from 'react-redux'
+import { reducers } from '../../../../redux/redux_store';
+import { ItemInterface } from '../events/eventItem/eventItem';
 
 type Props = {
     date: Date;
@@ -8,9 +11,8 @@ type Props = {
 
 const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
     const [position, setPosition] = useState<number>(-400)
-    const [isSwiping, setIsSwiping] = useState<boolean>(false)
-    const HourOfCurrentDay = date.getHours()
-    const minuteOfCurrentDate = date.getMinutes()
+
+    const items = useSelector((state: reducers) => state.eventComponent.eventItems)
 
     const firstDayOfCurrentWeek = (date: Date): Date => {
         let dateData = new Date(date)
@@ -64,6 +66,28 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
         }
     }
 
+    const generateEventComponents = (items: ItemInterface[], day: Date) => {
+        return items.map((item: ItemInterface) => {
+          if (
+            item.start.getFullYear() === day.getFullYear() &&
+            item.start.getDate() === day.getDate() &&
+            item.start.getMonth() === day.getMonth()
+          ) {
+            return (
+              <View
+                style={{
+                  backgroundColor: item.color,
+                  ...styles.eventCard,
+                }}
+              >
+              </View>
+            );
+          }
+          return null;
+        });
+      };
+      
+
     return (
         <View style={styles.swiper__container}>
             <TouchableOpacity
@@ -92,6 +116,9 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                             <View style={[styles.swiper__day, week[0].getDate() === date.getDate() && styles.swiper__day_active]}>
                                 <Text>{week[0].getDate()}</Text>
                             </View>
+                            <View style={styles.eventCard__container}>
+                                {generateEventComponents(items, week[0])}
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.swiper__item}
                             onPress={() => onNumPress(week[1])}
@@ -99,6 +126,9 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                             <Text style={styles.swiper__title}>Tue</Text>
                             <View style={[styles.swiper__day, week[1].getDate() === date.getDate() && styles.swiper__day_active]}>
                                 <Text>{week[1].getDate()}</Text>
+                            </View>
+                            <View style={styles.eventCard__container}>
+                                {generateEventComponents(items, week[1])}
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.swiper__item}
@@ -108,6 +138,9 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                             <View style={[styles.swiper__day, week[2].getDate() === date.getDate() && styles.swiper__day_active]}>
                                 <Text>{week[2].getDate()}</Text>
                             </View>
+                            <View style={styles.eventCard__container}>
+                                {generateEventComponents(items, week[2])}
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.swiper__item}
                             onPress={() => onNumPress(week[3])}
@@ -115,6 +148,9 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                             <Text style={styles.swiper__title}>Thu</Text>
                             <View style={[styles.swiper__day, week[3].getDate() === date.getDate() && styles.swiper__day_active]}>
                                 <Text>{week[3].getDate()}</Text>
+                            </View>
+                            <View style={styles.eventCard__container}>
+                                {generateEventComponents(items, week[3])}
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.swiper__item}
@@ -124,6 +160,9 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                             <View style={[styles.swiper__day, week[4].getDate() === date.getDate() && styles.swiper__day_active]}>
                                 <Text>{week[4].getDate()}</Text>
                             </View>
+                            <View style={styles.eventCard__container}>
+                                {generateEventComponents(items, week[4])}
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.swiper__item}
                             onPress={() => onNumPress(week[5])}
@@ -132,6 +171,9 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                             <View style={[styles.swiper__day, week[5].getDate() === date.getDate() && styles.swiper__day_active]}>
                                 <Text>{week[5].getDate()}</Text>
                             </View>
+                            <View style={styles.eventCard__container}>
+                                {generateEventComponents(items, week[5])}
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.swiper__item}
                             onPress={() => onNumPress(week[6])}
@@ -139,6 +181,9 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                             <Text style={styles.swiper__title}>Sun</Text>
                             <View style={[styles.swiper__day, week[6].getDate() === date.getDate() && styles.swiper__day_active]}>
                                 <Text>{week[6].getDate()}</Text>
+                            </View>
+                            <View style={styles.eventCard__container}>
+                                {generateEventComponents(items, week[6])}
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -167,8 +212,7 @@ const styles = StyleSheet.create({
     },
     swiper__item: {
        width: '14.27%',
-       justifyContent: 'center',
-       alignItems: 'center',
+       alignItems: 'center'
     },
     swiper__title: {
         fontFamily: 'Futura',
@@ -203,6 +247,19 @@ const styles = StyleSheet.create({
     previousWeek__text: {
         color: '#D9D9D9'
     },
+    eventCard: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        marginTop: 10,
+        marginRight: -4
+    },
+    eventCard__container: {
+        flexDirection: 'row',
+        marginRight: 5,
+        backgroundColor: 'white',
+        height: 10
+    }
 })
 
 export default CalendarSwiper;

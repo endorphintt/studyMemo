@@ -1,134 +1,70 @@
+import { ItemInterface } from "../components/calendar/calendarContent/events/eventItem/eventItem";
 import { EVENT_ACTION } from "./types";
 
 const UPDATE_DATE = 'UPDATE_DATE'
+const UPDATE_PROGRESS = 'UPDATE_PROGRESS'
 
-const someDate = new Date()
-console.log(new Date(someDate.getTime() + 24 * 60 * 60 * 1000))
+interface EventState {
+    eventItems: ItemInterface[];
+    eventActiveItems: ItemInterface[];
+}
 
-const initilState = {
+const initilState: EventState = {
     eventItems: [
         {
             id: '1',
-            date: someDate,
+            done: false,
             title: 'buy milk',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
-        },
-        {
-            id: '2',
-            date: someDate,
-            title: 'buy milk',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
-        },
-        {
-            id: '3',
-            date: someDate,
-            title: 'buy milk',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
-        },
-        {
-            id: '4',
-            date: someDate,
-            title: 'buy milk',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
-        },
-        {
-            id: '5',
-            date: someDate,
-            title: 'buy milk',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
+            start: new Date(2023, 7, 23, 8, 15),
+            time: 60,
+            color: 'rgba(222, 36, 36, 0.71)',
+            icon: './coffee.png',
             description: '1 litr'
         },
         {
             id: '7',
-            date: new Date(someDate.getTime() + 24 * 60 * 60 * 1000),
             title: 'THU',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
+            done: false,
+            start: new Date(2023, 7, 23, 6, 15),
+            time: 30,
+            color: 'rgba(36, 55, 222, 0.71)',
+            icon: './coffee.png',
             description: '1 litr'
         },
         {
             id: '8',
-            date: someDate,
             title: 'Tuesday',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
-        },
-        {
-            id: '8',
-            date: someDate,
-            title: 'Tuesday',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
-        },
-        {
-            id: '9',
-            date: someDate,
-            title: 'Tuesday',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
+            done: false,
+            start: new Date(2023, 7, 23, 10, 15),
+            time: 80,
+            color: 'rgba(222, 36, 203, 0.71)',
+            icon: './coffee.png',
             description: '1 litr'
         },
         {
             id: '10',
-            date: someDate,
             title: 'Tuesday',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
+            done: false,
+            start: new Date(2023, 7, 24, 12, 15),
+            time: 60,
+            color: 'rgba(222, 192, 36, 0.71)',
+            description: '1 litr',
+            icon: './coffee.png',
         },
     ],
     eventActiveItems: [
-        {
-            id: '6',
-            date: someDate,
-            title: 'buy milk',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
-        },
-        {
-            id: '7',
-            date: someDate,
-            title: 'buy milk',
-            start: '11:45',
-            time: '60',
-            color: 'blue',
-            description: '1 litr'
-        },
     ]
 }
 
-const eventReducer = (state = initilState, action: { type: string, activeDate: Date }) => {
+const eventReducer = (state = initilState, action: { type: string, payload: any }) => {
     switch(action.type) {
         case UPDATE_DATE:
             const newEventActiveItems = state.eventItems.filter(item => {
-                const itemDate = new Date(item.date);
+                const itemDate = new Date(item.start);
                 return (
-                    itemDate.getFullYear() === action.activeDate.getFullYear() &&
-                    itemDate.getDate() === action.activeDate.getDate() &&
-                    itemDate.getMonth() === action.activeDate.getMonth()
+                    itemDate.getFullYear() === action.payload.getFullYear() &&
+                    itemDate.getDate() === action.payload.getDate() &&
+                    itemDate.getMonth() === action.payload.getMonth()
                 );
             });
 
@@ -136,15 +72,34 @@ const eventReducer = (state = initilState, action: { type: string, activeDate: D
                 ...state,
                 eventActiveItems: newEventActiveItems,
             };
+        case UPDATE_PROGRESS:
+            const eventActiveItemsCopy = [...state.eventActiveItems]
+            eventActiveItemsCopy.forEach((item) => {
+                if(item.id === action.payload) {
+                    item.done = item.done? false : true
+                }
+            })
+            return {
+                ...state,
+                eventActiveItems: eventActiveItemsCopy
+            }
         default: 
             return state;
+        
     }
 }
 
 export const UpdateDateActionCreator = (date: Date) => {
     return ({
         type: UPDATE_DATE,
-        activeDate: date,
+        payload: date,
+    })
+}
+
+export const UpdateProgressActionCreator = (id: string) => {
+    return ({
+        type: UPDATE_PROGRESS,
+        payload: id,
     })
 }
 
