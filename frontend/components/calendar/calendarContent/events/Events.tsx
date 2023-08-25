@@ -34,14 +34,14 @@ const Events: React.FC<Props> = ({date, setAddEvent}) => {
         return arr;
     }
 
-    const activeSortedItems = bubbleSort(activeItems)
+    const activeSortedItems = activeItems? bubbleSort(activeItems) : activeItems
 
     return (
         <View style={styles.events__container}>
             <ScrollView style={styles.events}
                 showsVerticalScrollIndicator={false}
             >
-                {activeSortedItems.map((e: ItemInterface) => 
+                {activeSortedItems?.map((e: ItemInterface) => 
                     <EventItem key={e.id} item={e} />
                 )}
             </ScrollView>

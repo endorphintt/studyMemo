@@ -16,7 +16,7 @@ const CalendarContent: React.FC<Props> = ({date, setDate}) => {
         <View style={styles.calendarContent}>
             <CalendarSwiper date={date} setDate={setDate} />
             <Events setAddEvent={setAddEvent} date={date}/>
-            <AddEvent setDisplay={() => setAddEvent(false)} display={addEvent}/>
+            <AddEvent date={date} setDisplay={() => setAddEvent(false)} display={addEvent}/>
         </View>
     )
 }

@@ -1,5 +1,4 @@
 import { ItemInterface } from "../components/calendar/calendarContent/events/eventItem/eventItem";
-import { EVENT_ACTION } from "./types";
 
 const UPDATE_DATE = 'UPDATE_DATE'
 const UPDATE_PROGRESS = 'UPDATE_PROGRESS'
@@ -113,6 +112,13 @@ export const UpdateProgressActionCreator = (id: string) => {
     return ({
         type: UPDATE_PROGRESS,
         payload: id,
+    })
+}
+
+export const AddEventActionCreator = (event: ItemInterface) => {
+    return ({
+        type: ADD_EVENT,
+        payload: event,
     })
 }
 

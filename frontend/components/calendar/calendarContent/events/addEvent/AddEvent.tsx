@@ -1,10 +1,13 @@
 import { useState } from 'react'
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native'
 import HourSlider from './HourSlider.tsx/HourSlider'
+import { useDispatch } from 'react-redux';
+import { AddEventActionCreator, UpdateDateActionCreator } from '../../../../../redux/eventReducer';
 
 type Props = {
     display: boolean,
     setDisplay: () => void;
+    date: Date;
 }
 
 type start = {
@@ -13,16 +16,46 @@ type start = {
     id: string
 }
 
-const AddEvent: React.FC<Props> = ({display, setDisplay}) => {
+const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
     const [title, setTitle] = useState<string>('')
     const [description, setDescription] = useState<string>('')
     const [icon, setIcon] = useState<string>('./changeIcon/coffee.png')
     const [color, setColor] = useState<string>('rgba(155, 155, 155, 0.5)')
-    const [start, setStart] = useState<start>({hour: 12, minute: 0, id: '1200'})
+    const [start, setStart] = useState<start>({hour: 12, minute: 0, id: '1002010012'})
+
+    const dispatch = useDispatch()
 
     function generateRandomNumber(): number {
         const randomNumber: number = Math.floor(Math.random() * 90000000) + 10000000;
         return randomNumber;
+    }
+
+    const getEventDate = (date: Date, hour: number, minute: number): Date => {
+        const eventDate = new Date(date)
+        eventDate.setHours(hour)
+        eventDate.setMinutes(minute)
+        return eventDate 
+    }
+
+    const AddEvent = () => {
+        const data = {
+            id: generateRandomNumber().toString(),
+            title: title,
+            start: getEventDate(date, start.hour, start.minute),
+            time: 60,
+            color: color,
+            description: description,
+            done: false,
+            icon: 'none'
+        }
+        dispatch(AddEventActionCreator(data))
+        setDisplay()
+        setTitle('')
+        setStart({hour: 12, minute: 0, id: '1002010012'})
+        setColor('rgba(155, 155, 155, 0.5)')
+        setIcon('./changeIcon/coffee.png')
+        setDescription('')
+        dispatch(UpdateDateActionCreator(date))
     }
 
     const colors = ['rgba(222, 192, 36, 0.5)',
@@ -67,25 +100,30 @@ const AddEvent: React.FC<Props> = ({display, setDisplay}) => {
                     />
                 </View>
                 <HourSlider active={start} setActive={setStart} />
-                <TextInput
-                    placeholder="deskription"
-                    value={description}
-                    onChangeText={(text) => setDescription(text)}
-                    multiline={true}
-                    style={styles.addEvent__text}
-                />
+                <Text
+                    style={styles.addEvent__sign}
+                >Color</Text>
                 <View style={styles.addEvent__color_container}>
                     {colors.map((item: string) => 
                         <TouchableOpacity
                             key={item}
                             style= {{...styles.addEvent__color, backgroundColor: item}}
+                            onPress={() => setColor(item)}
                         >
-
                         </TouchableOpacity>
                     )}
                 </View>
+                <Text
+                    style={styles.addEvent__sign}
+                >Deskription (optional)</Text>
+                <TextInput
+                    value={description}
+                    onChangeText={(text) => setDescription(text)}
+                    multiline={true}
+                    style={styles.addEvent__text}
+                />
                 <TouchableOpacity
-                    onPress={() => console.log('add item')}
+                    onPress={AddEvent}
                     style={styles.addEvent__submit}
                 >
                     <Text
@@ -139,18 +177,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
-        shadowColor: 'rgba(115, 226, 234, 1)', 
-        shadowOffset: {
-        width: 0,
-        height: 0,
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 20,
-        elevation: 5, 
     },
     changeIcon__image: {
         width: 40,
-        height: 40
+        height: 40,
     },
     addEvent__title: {
         height: 50,
@@ -161,18 +191,42 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center'
     },
-    addEvent__text: {},
+    addEvent__text: {
+        marginVertical: 30,
+        width: '100%',
+        borderRadius: 20,
+        backgroundColor: 'rgba(155, 155, 155, 0.5)',
+        height: 200,
+        padding: 10,
+        fontSize: 20
+    },
     addEvent__color_container: {
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        marginTop: 20,
+        marginBottom: 30,
     },
     addEvent__color: {
         width: 25,
         height: 25,
         borderRadius: 12.5
     },
-    addEvent__submit: {},
-    addEvent__submitText: {},
+    addEvent__submit: {
+        marginBottom: 100,
+        marginHorizontal: '10%',
+        width: '80%',
+        height: 50,
+        backgroundColor: 'rgba(115, 226, 234, 1)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10
+    },
+    addEvent__submitText: {
+        fontSize: 20,
+        color: 'white',
+        textTransform: 'uppercase',
+        letterSpacing: 2
+    },
     addEvent__close_container: {
         width: '100%',
         padding: 10,

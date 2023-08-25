@@ -45,7 +45,7 @@ const EventItem: React.FC<Props> = ({item}) => {
                         {item.title}
                     </Text>
                     <Text style={styles.eventItem__start}>
-                        {item.start.getHours() + ':' + item.start.getMinutes()}
+                        {item.start.getHours()}:{item.start.getMinutes().toString().length === 1 ? '0' + item.start.getMinutes() : item.start.getMinutes() }
                     </Text>
                 </View>
                 <TouchableOpacity
@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     eventItem__title: {
         fontSize: 20,
         fontFamily: 'Futura',
+        overflow: 'hidden',
     },
     eventItem__start: {
         position: 'absolute',

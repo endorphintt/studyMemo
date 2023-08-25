@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, NativeSyntheticEvent, NativeScrollE
 
 type Props = {
     active: {hour: number, minute: number, id: string}
-    setActive: (arg: {hour: number, minute: number}) => void;
+    setActive: (arg: {hour: number, minute: number,  id: string}) => void;
 }
 
 const HourSlider: React.FC<Props> = ({active, setActive}) => {
