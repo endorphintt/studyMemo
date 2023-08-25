@@ -53,14 +53,13 @@ const Slider: React.FC<Props> = ({year, setYear, month, setMonth}) => {
         })
     }
 
-    const onScrollMonthsEnd = () => {
-        const scrollMonthsToY = month * 45
-        monthsRef.current?.scrollTo({y: scrollMonthsToY})
-    }
-
-    const onScrollYearsEnd = () => {
-        const scrollYearsToY = ( year - 2023 ) * 45 
-        yearsRef.current?.scrollTo({y: scrollYearsToY})
+    const getActiveMonthName = () => {
+        const activeMonth = months.find(item => item.index === month)
+        if (activeMonth) {
+            return activeMonth.name;
+        } else {
+            return 'none';
+        }
     }
 
     return (
@@ -72,11 +71,10 @@ const Slider: React.FC<Props> = ({year, setYear, month, setMonth}) => {
                 showsVerticalScrollIndicator={false}
                 onLayout={onMonthsLayout}
                 scrollEventThrottle={4}
-                onScrollEndDrag={onScrollMonthsEnd}
             >   
                 {months.map((mon) => 
                     <View style={styles.slider__item} key={mon.index}>
-                        <Text style={[styles.slider__monthText, month === mon.index && styles.slider__selectedMonth]}>{mon.name? mon.name: ''}</Text> 
+                        <Text style={styles.slider__monthText}>{mon.name? mon.name: ''}</Text> 
                     </View>
                 )}
             </ScrollView>
@@ -87,15 +85,17 @@ const Slider: React.FC<Props> = ({year, setYear, month, setMonth}) => {
                 onLayout={onYearsLayout}
                 onScroll={yearsHandleScroll}
                 scrollEventThrottle={4}
-                onScrollEndDrag={onScrollYearsEnd}
             >   
                 {years.map((y) => 
                     <View style={styles.slider__item} key={y}>
-                        <Text style={[styles.slider__yearText, year === y && styles.slider__selectedYear]}>{y}</Text> 
+                        <Text style={styles.slider__yearText}>{y}</Text> 
                     </View>
                 )}
             </ScrollView>
-            <View style={styles.poput__line}></View>
+            <View style={styles.slider__active}>
+                <Text style={styles.slider__active_text}>{getActiveMonthName()}</Text>
+                <Text style={styles.slider__active_text}>{year}</Text>
+            </View>
         </View>
        
     )
@@ -115,12 +115,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    poput__line: {
-        height: 45,
-        width: '100%',
-        backgroundColor: 'rgba(111, 111, 111, 0.3 )',
+    slider__active: {
         position: 'absolute',
-        top: 125
+        top: 135,
+        left: 0,
+        width: '100%',
+        borderRadius: 10,
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        height: 50,
+        backgroundColor: 'rgba(115, 226, 234, 1)',
+        flexDirection: 'row'
+    },
+    slider__active_text: {
+        fontSize: 25,
+        color: 'white'
     },
     slider__yearText: {
         padding: 0,
@@ -130,9 +139,6 @@ const styles = StyleSheet.create({
         paddingBottom: 15,
         fontSize: 20
     },
-    slider__selectedYear: {
-        color: 'blue'
-    },
     slider__monthText: {
         padding: 0,
         margin: 0,
@@ -141,9 +147,6 @@ const styles = StyleSheet.create({
         paddingBottom: 15,
         fontSize: 20
     },
-    slider__selectedMonth: {
-        color: 'blue'
-    }
 })
 
 export default Slider;

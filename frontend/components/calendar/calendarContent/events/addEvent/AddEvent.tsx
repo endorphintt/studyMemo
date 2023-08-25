@@ -8,8 +8,9 @@ type Props = {
 }
 
 type start = {
-    hour: string;
-    minute: string
+    hour: number;
+    minute: number;
+    id: string
 }
 
 const AddEvent: React.FC<Props> = ({display, setDisplay}) => {
@@ -17,7 +18,7 @@ const AddEvent: React.FC<Props> = ({display, setDisplay}) => {
     const [description, setDescription] = useState<string>('')
     const [icon, setIcon] = useState<string>('./changeIcon/coffee.png')
     const [color, setColor] = useState<string>('rgba(155, 155, 155, 0.5)')
-    const [start, setStart] = useState<start>({hour: 12, minute: 0})
+    const [start, setStart] = useState<start>({hour: 12, minute: 0, id: '1200'})
 
     function generateRandomNumber(): number {
         const randomNumber: number = Math.floor(Math.random() * 90000000) + 10000000;

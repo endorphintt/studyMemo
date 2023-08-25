@@ -2,17 +2,22 @@ import { useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, NativeSyntheticEvent, NativeScrollEvent } from 'react-native'
 
 type Props = {
-    active: {hour: number, minute: number}
+    active: {hour: number, minute: number, id: string}
     setActive: (arg: {hour: number, minute: number}) => void;
 }
 
 const HourSlider: React.FC<Props> = ({active, setActive}) => {
-    const items: {hour: number, minute: number}[] = []
+    const items: {hour: number, minute: number, id: string}[] = []
     const slider = useRef<ScrollView>(null)
+
+    function generateRandomNumber(): number {
+        const randomNumber: number = Math.floor(Math.random() * 90000000) + 10000000;
+        return randomNumber;
+    }
     
     for(let i = 0; i < 24; i++){
         for(let j = 0; j <= 45; j += 15){
-            items.push({hour: i, minute: j})
+            items.push({hour: i, minute: j, id: generateRandomNumber().toString()})
         }
     }
 
@@ -21,7 +26,7 @@ const HourSlider: React.FC<Props> = ({active, setActive}) => {
 
         items.forEach(item => {
             let itemTop = (item.hour * 4 + item.minute / 15) * 35
-            if(yOffset >= itemTop && yOffset <= itemTop + 34) {
+            if(yOffset >= itemTop && yOffset <= itemTop + 34 ) {
                 setActive(item)
             }
         })
@@ -44,12 +49,16 @@ const HourSlider: React.FC<Props> = ({active, setActive}) => {
                 onLayout={onLayout}
                 scrollEventThrottle={4}
             >
+                <View style={styles.hourScroll__padding}></View>
                 {items.map((item) => 
-                    <Text style={styles.hourSlider__item}>
+                    <Text style={styles.hourSlider__item}
+                        key={item.id}
+                    >
                         {item.hour.toString().length === 1? '0' + item.hour : item.hour}:
                         {item.minute.toString().length === 1? '0' + item.minute : item.minute}
                     </Text>
                 )}
+                <View style={styles.hourScroll__padding}></View>
             </ScrollView>
             <View style={styles.hourSlider__active}>
                 <Text style={styles.hourSlider__active_text}>
@@ -70,6 +79,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     hourSlider__scroll: {
+    },
+    hourScroll__padding: {
+        height: 105
     },
     hourSlider__item: {
         flexDirection: 'row',
