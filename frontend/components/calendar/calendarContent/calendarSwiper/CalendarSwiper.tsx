@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, PanResponder, TouchableOpacity} from 'react-nat
 import { useSelector } from 'react-redux'
 import { reducers } from '../../../../redux/redux_store';
 import { ItemInterface } from '../events/eventItem/eventItem';
+import { EventPage } from '../../../../redux/eventReducer';
 
 type Props = {
     date: Date;
@@ -12,7 +13,7 @@ type Props = {
 const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
     const [position, setPosition] = useState<number>(-400)
 
-    const items = useSelector((state: reducers) => state.eventComponent.eventItems)
+    const items = useSelector((state: EventPage) => state.eventComponent.eventItems)
 
     const firstDayOfCurrentWeek = (date: Date): Date => {
         let dateData = new Date(date)
@@ -75,6 +76,7 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
           ) {
             return (
               <View
+                key={item.id}
                 style={{
                   backgroundColor: item.color,
                   ...styles.eventCard,

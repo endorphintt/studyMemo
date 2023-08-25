@@ -3,10 +3,15 @@ import { EVENT_ACTION } from "./types";
 
 const UPDATE_DATE = 'UPDATE_DATE'
 const UPDATE_PROGRESS = 'UPDATE_PROGRESS'
+const ADD_EVENT = 'ADD_EVENT'
 
 interface EventState {
     eventItems: ItemInterface[];
     eventActiveItems: ItemInterface[];
+}
+
+export interface EventPage {
+    eventComponent: EventState; 
 }
 
 const initilState: EventState = {
@@ -17,7 +22,7 @@ const initilState: EventState = {
             title: 'buy milk',
             start: new Date(2023, 7, 23, 8, 15),
             time: 60,
-            color: 'rgba(222, 36, 36, 0.71)',
+            color: 'rgba(222, 36, 36, 0.4)',
             icon: './coffee.png',
             description: '1 litr'
         },
@@ -27,7 +32,7 @@ const initilState: EventState = {
             done: false,
             start: new Date(2023, 7, 23, 6, 15),
             time: 30,
-            color: 'rgba(36, 55, 222, 0.71)',
+            color: 'rgba(36, 55, 222, 0.4)',
             icon: './coffee.png',
             description: '1 litr'
         },
@@ -37,7 +42,7 @@ const initilState: EventState = {
             done: false,
             start: new Date(2023, 7, 23, 10, 15),
             time: 80,
-            color: 'rgba(222, 36, 203, 0.71)',
+            color: 'rgba(222, 36, 203, 0.4)',
             icon: './coffee.png',
             description: '1 litr'
         },
@@ -47,7 +52,7 @@ const initilState: EventState = {
             done: false,
             start: new Date(2023, 7, 24, 12, 15),
             time: 60,
-            color: 'rgba(222, 192, 36, 0.71)',
+            color: 'rgba(222, 192, 36, 0.4)',
             description: '1 litr',
             icon: './coffee.png',
         },
@@ -83,6 +88,14 @@ const eventReducer = (state = initilState, action: { type: string, payload: any 
                 ...state,
                 eventActiveItems: eventActiveItemsCopy
             }
+        case ADD_EVENT: 
+            const newState = {
+                eventItems: [
+                    ...state.eventItems,
+                    {...action.payload}
+                ]
+            }
+            return newState
         default: 
             return state;
         

@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, PanResponder } from "react-native"
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native"
 import { useDispatch } from "react-redux";
 import { UpdateProgressActionCreator } from "../../../../../redux/eventReducer";
 
@@ -24,7 +24,7 @@ const EventItem: React.FC<Props> = ({item}) => {
     const buttonIsDone = (id: string) => {
         dispatch(UpdateProgressActionCreator(id))
     }
-    
+
     return(
         <View
             style={{

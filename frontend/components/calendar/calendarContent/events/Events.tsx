@@ -1,22 +1,24 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
 import { useDispatch, useSelector } from "react-redux"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { UpdateDateActionCreator } from "../../../../redux/eventReducer";
 import { reducers } from "../../../../redux/redux_store";
 import EventItem, { ItemInterface } from "./eventItem/eventItem";
+import { EventPage } from "../../../../redux/eventReducer";
 
 type Props = {
     date: Date;
+    setAddEvent: (arg: boolean) => void;
 }
 
-const Events: React.FC<Props> = ({date}) => {
+const Events: React.FC<Props> = ({date, setAddEvent}) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
         dispatch(UpdateDateActionCreator(date))
     }, [date])
 
-    const activeItems = useSelector((state: reducers) => state.eventComponent.eventActiveItems)
+    const activeItems = useSelector((state: EventPage) => state.eventComponent.eventActiveItems)
 
     const bubbleSort = (arr: ItemInterface[]): ItemInterface[] => {
         const len = arr.length;
@@ -46,7 +48,7 @@ const Events: React.FC<Props> = ({date}) => {
             <View style={styles.addEvent_container} >
                 <TouchableOpacity
                         style={styles.addEvent}
-                        onPress={() => console.log('add item')}
+                        onPress={() => setAddEvent(true)}
                     >
                         <Text style={styles.addEvent__text}>{'+'}</Text>
                 </TouchableOpacity>

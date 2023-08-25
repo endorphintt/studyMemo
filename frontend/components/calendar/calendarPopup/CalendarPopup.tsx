@@ -71,7 +71,7 @@ const CalendarPopup: React.FC<Props> = ({date, setDate, display, setCalendarPopu
             >
                 <View style={styles.popup__close_container}>
                     <Image
-                        style={styles.pupup__close_img}
+                        style={styles.popup__close_img}
                         source={require('./close.png')}
                     />
                 </View>
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: '#D9D9D9'
     },
-    pupup__close_img: {
+    popup__close_img: {
         width: 20,
         height: 20,
     },
