@@ -1,8 +1,9 @@
-import { ItemInterface } from "../components/calendar/calendarContent/events/eventItem/eventItem";
+import { ItemInterface } from './../components/calendar/calendarContent/events/eventItem/eventItem';
 
 const UPDATE_DATE = 'UPDATE_DATE'
 const UPDATE_PROGRESS = 'UPDATE_PROGRESS'
 const ADD_EVENT = 'ADD_EVENT'
+const DELETE_EVENT = 'DELETE_EVENT'
 
 interface EventState {
     eventItems: ItemInterface[];
@@ -61,6 +62,7 @@ const initilState: EventState = {
 }
 
 const eventReducer = (state = initilState, action: { type: string, payload: any }) => {
+    let newState;
     switch(action.type) {
         case UPDATE_DATE:
             const newEventActiveItems = state.eventItems.filter(item => {
@@ -88,13 +90,22 @@ const eventReducer = (state = initilState, action: { type: string, payload: any 
                 eventActiveItems: eventActiveItemsCopy
             }
         case ADD_EVENT: 
-            const newState = {
+            newState = {
                 eventItems: [
                     ...state.eventItems,
                     {...action.payload}
                 ]
             }
             return newState
+        case DELETE_EVENT:
+            const updatedEventItems = state.eventItems.filter((item: ItemInterface) => item.id !== action.payload);
+            const updatedEventActiveItems = state.eventActiveItems.filter((item: ItemInterface) => item.id !== action.payload);
+        
+            return {
+                ...state,
+                eventItems: updatedEventItems,
+                eventActiveItems: updatedEventActiveItems
+            };
         default: 
             return state;
         
@@ -119,6 +130,13 @@ export const AddEventActionCreator = (event: ItemInterface) => {
     return ({
         type: ADD_EVENT,
         payload: event,
+    })
+}
+
+export const DeleteEventActionCreator = (id: string) => {
+    return ({
+        type: DELETE_EVENT,
+        payload: id,
     })
 }
 

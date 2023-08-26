@@ -1,8 +1,7 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native"
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
-import { UpdateDateActionCreator } from "../../../../redux/eventReducer";
-import { reducers } from "../../../../redux/redux_store";
+import { DeleteEventActionCreator, UpdateDateActionCreator } from "../../../../redux/eventReducer";
 import EventItem, { ItemInterface } from "./eventItem/eventItem";
 import { EventPage } from "../../../../redux/eventReducer";
 
@@ -12,7 +11,14 @@ type Props = {
 }
 
 const Events: React.FC<Props> = ({date, setAddEvent}) => {
+    const [eventInfoItem, setEventInfoItem] = useState<ItemInterface>()
+    const [eventInfoDisplay, setEventInfoDisplay] = useState<boolean>(false)
     const dispatch = useDispatch()
+
+    const getEventInfo = (data: ItemInterface) => {
+        setEventInfoItem(data)
+        setEventInfoDisplay(true)
+    }
 
     useEffect(() => {
         dispatch(UpdateDateActionCreator(date))
@@ -34,6 +40,12 @@ const Events: React.FC<Props> = ({date, setAddEvent}) => {
         return arr;
     }
 
+    const deleteEventItem = (id: string) => {
+        dispatch(DeleteEventActionCreator(id))
+        setEventInfoDisplay(false)
+        dispatch(UpdateDateActionCreator(date))
+    }
+
     const activeSortedItems = activeItems? bubbleSort(activeItems) : activeItems
 
     return (
@@ -42,7 +54,7 @@ const Events: React.FC<Props> = ({date, setAddEvent}) => {
                 showsVerticalScrollIndicator={false}
             >
                 {activeSortedItems?.map((e: ItemInterface) => 
-                    <EventItem key={e.id} item={e} />
+                    <EventItem getEventInfo={getEventInfo} key={e.id} item={e} />
                 )}
             </ScrollView>
             <View style={styles.addEvent_container} >
@@ -53,11 +65,101 @@ const Events: React.FC<Props> = ({date, setAddEvent}) => {
                         <Text style={styles.addEvent__text}>{'+'}</Text>
                 </TouchableOpacity>
             </View>
+            {eventInfoItem? 
+                <View style={{...styles.eventItem__info, display: eventInfoDisplay? 'flex' : 'none'}}>
+                    <View style={styles.eventInfo__close_container}>
+                    <TouchableOpacity 
+                        onPress={() => setEventInfoDisplay(false)}
+                        style={styles.eventInfo__close}>
+                        <Image
+                            style={styles.eventInfo__close_img}
+                            source={require('./../../calendarPopup/close.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+                    <Text style={styles.eventInfoItem__title} >{eventInfoItem.title}</Text>
+                    <Text style={styles.eventInfoItem__start}>{eventInfoItem.start.getHours()}:{eventInfoItem?.start.getMinutes()}</Text>
+                    <Text style={styles.eventInfoItem__description}>{eventInfoItem.description}</Text>
+                    <TouchableOpacity
+                        onPress={() => deleteEventItem(eventInfoItem.id)}
+                        style={styles.eventItem__delete}
+                    >
+                        <Image
+                            style={styles.eventItem__delete_img}
+                            source={require('./delete.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+            :
+                <View style={{display: 'none'}}></View>
+            }
         </View>
     )
 }
 
 const styles = StyleSheet.create({
+    eventItem__info: {
+        position: 'absolute',
+        marginTop: -50,
+        left: 20,
+        minHeight: 250,
+        backgroundColor: 'white',
+        width: '100%',
+        top: 0,
+        borderRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+        elevation: 3,
+    },
+    eventInfo__close_container: {
+        width: '100%',
+        padding: 10,
+        flexDirection: 'row',
+        justifyContent: 'flex-end'
+    },
+    eventInfo__close:{
+        padding: 7.5,
+        width: 35,
+        height: 35,
+        borderRadius: 20,
+        backgroundColor: '#D9D9D9'
+    },
+    eventInfo__close_img: {
+        width: 20,
+        height: 20,
+    },
+    eventInfoItem__title: {
+        textAlign: 'center',
+        fontSize: 22,
+        fontFamily: 'Futura'
+    },
+    eventInfoItem__start: {
+        textAlign: 'right',
+        color: 'rgba(155, 155, 155, 0.8)',
+        paddingRight: 10
+    },
+    eventInfoItem__description: {
+        backgroundColor: 'rgba(155, 155, 155, 0.6)',
+        flex: 1,
+        borderRadius: 30,
+        margin: 5,
+        padding: 10
+    },
+    eventItem__delete: {
+        width: '100%',
+        height: 50,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(255, 0, 0, 0.5)'
+    },
+    eventItem__delete_img: {
+        height: 40,
+        width: 40
+    },
     events: {
         flex: 1,
         position: 'relative',

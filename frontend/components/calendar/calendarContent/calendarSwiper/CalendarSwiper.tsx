@@ -68,24 +68,25 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
     }
 
     const generateEventComponents = (items: ItemInterface[], day: Date) => {
+        const dayCopy: ItemInterface[] = []
         return items.map((item: ItemInterface) => {
-          if (
-            item.start.getFullYear() === day.getFullYear() &&
-            item.start.getDate() === day.getDate() &&
-            item.start.getMonth() === day.getMonth()
-          ) {
-            return (
-              <View
-                key={item.id}
-                style={{
-                  backgroundColor: item.color,
-                  ...styles.eventCard,
-                }}
-              >
-              </View>
-            );
-          }
-          return null;
+            if (
+              item.start.getFullYear() === day.getFullYear() &&
+              item.start.getDate() === day.getDate() &&
+              item.start.getMonth() === day.getMonth()
+            ) {
+              return (
+                <View
+                  key={item.id}
+                  style={{
+                    backgroundColor: item.color,
+                    ...styles.eventCard,
+                  }}
+                >
+                </View>
+              );
+            }
+        return null;
         });
       };
       

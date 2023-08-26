@@ -16,9 +16,10 @@ export interface ItemInterface {
 
 type Props = {
     item: ItemInterface;
+    getEventInfo: (data: ItemInterface) => void
 }
 
-const EventItem: React.FC<Props> = ({item}) => {
+const EventItem: React.FC<Props> = ({item, getEventInfo}) => {
     const dispatch = useDispatch()
  
     const buttonIsDone = (id: string) => {
@@ -32,7 +33,9 @@ const EventItem: React.FC<Props> = ({item}) => {
             }}
         >            
             <View style={styles.eventScrollItem}>   
-                <View style={styles.eventItem__content}>
+                <TouchableOpacity style={styles.eventItem__content}
+                    onPress={() => getEventInfo(item)}
+                >
                     <View 
                         style={{...styles.eventIcon__container, backgroundColor: item.color}}     
                     >
@@ -47,7 +50,7 @@ const EventItem: React.FC<Props> = ({item}) => {
                     <Text style={styles.eventItem__start}>
                         {item.start.getHours()}:{item.start.getMinutes().toString().length === 1 ? '0' + item.start.getMinutes() : item.start.getMinutes() }
                     </Text>
-                </View>
+                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => buttonIsDone(item.id)}
                     style={styles.eventItem__button_container}
@@ -78,7 +81,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         borderRadius: 20,
         height: 80,
-        overflow: 'hidden', 
+        overflow: 'visible', 
         marginBottom: 3,
     },
     eventScrollItem: {

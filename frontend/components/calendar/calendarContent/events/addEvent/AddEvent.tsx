@@ -38,24 +38,28 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
     }
 
     const AddEvent = () => {
-        const data = {
-            id: generateRandomNumber().toString(),
-            title: title,
-            start: getEventDate(date, start.hour, start.minute),
-            time: 60,
-            color: color,
-            description: description,
-            done: false,
-            icon: 'none'
+        if(title.length > 0){
+            const data = {
+                id: generateRandomNumber().toString(),
+                title: title,
+                start: getEventDate(date, start.hour, start.minute),
+                time: 60,
+                color: color,
+                description: description,
+                done: false,
+                icon: 'none'
+            }
+            dispatch(AddEventActionCreator(data))
+            setDisplay()
+            setTitle('')
+            setStart({hour: 12, minute: 0, id: '1002010012'})
+            setColor('rgba(155, 155, 155, 0.5)')
+            setIcon('./changeIcon/coffee.png')
+            setDescription('')
+            dispatch(UpdateDateActionCreator(date))
+        } else {
+            alert('provide title!')
         }
-        dispatch(AddEventActionCreator(data))
-        setDisplay()
-        setTitle('')
-        setStart({hour: 12, minute: 0, id: '1002010012'})
-        setColor('rgba(155, 155, 155, 0.5)')
-        setIcon('./changeIcon/coffee.png')
-        setDescription('')
-        dispatch(UpdateDateActionCreator(date))
     }
 
     const colors = ['rgba(222, 192, 36, 0.5)',
