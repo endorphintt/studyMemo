@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native'
 import HourSlider from './HourSlider.tsx/HourSlider'
 import { useDispatch } from 'react-redux';
 import { AddEventActionCreator, UpdateDateActionCreator } from '../../../../../redux/eventReducer';
+import axios from 'axios';
+import ChangeIcon from './changeIcon/ChangeIcon';
+
 
 type Props = {
     display: boolean,
@@ -19,9 +22,29 @@ type start = {
 const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
     const [title, setTitle] = useState<string>('')
     const [description, setDescription] = useState<string>('')
+    const [chooseIcon, setChooseIcon] = useState<boolean>(false)
     const [icon, setIcon] = useState<string>('./changeIcon/coffee.png')
     const [color, setColor] = useState<string>('rgba(155, 155, 155, 0.5)')
     const [start, setStart] = useState<start>({hour: 12, minute: 0, id: '1002010012'})
+
+    const [images, setImages] = useState<{imagePath: string, id: string}[]>([]);
+    
+    useEffect(() => {
+        fetchImages();
+      }, []);
+    
+      async function fetchImages() {
+        try {
+            const response = await fetch('http://localhost:8080/images/');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const imagesData = await response.json();
+            setImages(imagesData);
+        } catch (error: any) {
+            console.error('Помилка при отриманні зображень:', error.message);
+        }
+    }
 
     const dispatch = useDispatch()
 
@@ -89,6 +112,7 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
                 >title and icon</Text>
                 <View style={styles.addEvent__header}>
                     <TouchableOpacity
+                        onPress={() => setChooseIcon(true)}
                         style={{...styles.changeIcon, backgroundColor: color}}
                     >
                         <Image
@@ -135,6 +159,11 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
                     >add event</Text>
                 </TouchableOpacity>
             </ScrollView>
+            {chooseIcon?
+                <ChangeIcon imageData={images} setActive={setIcon}/>
+                :
+                <></>
+            }        
         </View>
     )
 }
@@ -251,3 +280,5 @@ const styles = StyleSheet.create({
 })
 
 export default AddEvent;
+
+

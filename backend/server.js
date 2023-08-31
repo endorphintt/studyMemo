@@ -1,6 +1,12 @@
+require('dotenv').config()
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
+const addImagesToDatabase = require('./addImages/addImages')
+const deleteAllImages = require('./addImages/delete')
+const cors = require('cors')
+
+app.use(cors());
 
 // Database connection (using sequelize)
 
@@ -17,6 +23,9 @@ const imageRoutes = require('./routes/imageRoutes'); // Path to the file with ro
 
 app.use('/events', eventRoutes); // Use routes for items
 app.use('/images', imageRoutes); // Use routes for images
+
+// deleteAllImages()
+// addImagesToDatabase()
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
