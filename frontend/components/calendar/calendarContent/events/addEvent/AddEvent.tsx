@@ -3,7 +3,6 @@ import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Image, TextInput 
 import HourSlider from './HourSlider.tsx/HourSlider'
 import { useDispatch } from 'react-redux';
 import { AddEventActionCreator, UpdateDateActionCreator } from '../../../../../redux/eventReducer';
-import axios from 'axios';
 import ChangeIcon from './changeIcon/ChangeIcon';
 
 
@@ -23,11 +22,11 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
     const [title, setTitle] = useState<string>('')
     const [description, setDescription] = useState<string>('')
     const [chooseIcon, setChooseIcon] = useState<boolean>(false)
-    const [icon, setIcon] = useState<string>('./changeIcon/coffee.png')
+    const [icon, setIcon] = useState<string>('')
     const [color, setColor] = useState<string>('rgba(155, 155, 155, 0.5)')
     const [start, setStart] = useState<start>({hour: 12, minute: 0, id: '1002010012'})
 
-    const [images, setImages] = useState<{imagePath: string, id: string}[]>([]);
+    const [images, setImages] = useState<{name: string, type: string}[]>([]);
     
     useEffect(() => {
         fetchImages();
@@ -35,12 +34,13 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
     
       async function fetchImages() {
         try {
-            const response = await fetch('http://localhost:8080/images/');
+            const response = await fetch('http://localhost:4000/images/');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const imagesData = await response.json();
             setImages(imagesData);
+            setIcon(imagesData[0].name)
         } catch (error: any) {
             console.error('Помилка при отриманні зображень:', error.message);
         }
@@ -117,7 +117,9 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
                     >
                         <Image
                             style={styles.changeIcon__image}
-                            source={require('./changeIcon/coffee.png')}
+                            source={{
+                                uri: `http://localhost:4000/${icon}`
+                            }}
                         />
                     </TouchableOpacity>
                     <TextInput
@@ -160,7 +162,7 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
                 </TouchableOpacity>
             </ScrollView>
             {chooseIcon?
-                <ChangeIcon imageData={images} setActive={setIcon}/>
+                <ChangeIcon imageData={images} close={() => setChooseIcon(false)} setActive={setIcon}/>
                 :
                 <></>
             }        

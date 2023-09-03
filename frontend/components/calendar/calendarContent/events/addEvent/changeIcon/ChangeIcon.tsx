@@ -1,12 +1,12 @@
 import { View, StyleSheet, Text, ScrollView, TouchableOpacity, Image } from "react-native";
-import SvgUri from 'react-native-svg-uri';
 
 type Props = {
-    setActive: (id: string) => void;
-    imageData: {id: string, imagePath: string}[]
+    setActive: (name: string) => void;
+    imageData: {name: string, type: string}[];
+    close: () => void
 }
 
-const ChangeIcon: React.FC<Props> = ({setActive, imageData}) => {
+const ChangeIcon: React.FC<Props> = ({setActive, imageData, close}) => {
     console.log(imageData)
     return (
         <ScrollView style={styles.icons}>
@@ -14,12 +14,18 @@ const ChangeIcon: React.FC<Props> = ({setActive, imageData}) => {
                 {imageData.map((imageItem) => 
                     <TouchableOpacity
                         style={styles.icons__image_container}
+                        key={imageItem.name}
+                        onPress={() => {
+                            setActive(imageItem.name)
+                            close()
+                        }}
                     >
-                        {/* <SvgUri 
-                            width='100'
-                            height='100'
-                            source={{ uri: `../../../../../../../backend/addImages/${imageItem.imagePath}` }}
-                        /> */}
+                        <Image
+                            style={styles.icons__image}
+                            source={{
+                                uri: `http://localhost:4000/${imageItem.name}`
+                            }}
+                        />
                     </TouchableOpacity>
                 )}
             </View>
@@ -38,7 +44,6 @@ const styles = StyleSheet.create({
     },
     icons__container: {
         margin: 10,
-        backgroundColor: 'white',
         flex: 1,
         minHeight: 20,
         flexDirection: 'row',
@@ -48,7 +53,12 @@ const styles = StyleSheet.create({
     icons__image_container: {
         width: 100,
         height: 100,
-        backgroundColor: 'gray'
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    icons__image: {
+        width: 60,
+        height: 60
     }
 })
 
