@@ -47,7 +47,7 @@ const HourSlider: React.FC<Props> = ({active, setActive}) => {
                 onScroll={handleScroll}
                 ref={slider}
                 onLayout={onLayout}
-                scrollEventThrottle={4}
+                scrollEventThrottle={2}
             >
                 <View style={styles.hourScroll__padding}></View>
                 {items.map((item) => 

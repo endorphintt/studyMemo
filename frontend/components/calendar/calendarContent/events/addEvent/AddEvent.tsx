@@ -4,6 +4,8 @@ import HourSlider from './HourSlider.tsx/HourSlider'
 import { useDispatch } from 'react-redux';
 import { AddEventActionCreator, UpdateDateActionCreator } from '../../../../../redux/eventReducer';
 import ChangeIcon from './changeIcon/ChangeIcon';
+import axios from 'axios'
+import { ItemInterface } from '../eventItem/eventItem';
 
 
 type Props = {
@@ -25,8 +27,9 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
     const [icon, setIcon] = useState<string>('')
     const [color, setColor] = useState<string>('rgba(155, 155, 155, 0.5)')
     const [start, setStart] = useState<start>({hour: 12, minute: 0, id: '1002010012'})
-
     const [images, setImages] = useState<{name: string, type: string}[]>([]);
+
+    const serverUrl = 'http://localhost:4000'
     
     useEffect(() => {
         fetchImages();
@@ -53,35 +56,50 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
         return randomNumber;
     }
 
-    const getEventDate = (date: Date, hour: number, minute: number): Date => {
+    const getEventDate = (): Date => {
         const eventDate = new Date(date)
-        eventDate.setHours(hour)
-        eventDate.setMinutes(minute)
+        eventDate.setHours(start.hour)
+        eventDate.setMinutes(start.minute)
         return eventDate 
     }
 
-    const AddEvent = () => {
-        if(title.length > 0){
-            const data = {
-                id: generateRandomNumber().toString(),
-                title: title,
-                start: getEventDate(date, start.hour, start.minute),
-                time: 60,
-                color: color,
-                description: description,
-                done: false,
-                icon: 'none'
-            }
-            dispatch(AddEventActionCreator(data))
-            setDisplay()
-            setTitle('')
-            setStart({hour: 12, minute: 0, id: '1002010012'})
-            setColor('rgba(155, 155, 155, 0.5)')
-            setIcon('./changeIcon/coffee.png')
-            setDescription('')
-            dispatch(UpdateDateActionCreator(date))
+    const addEvent = () => {
+        const eventData = {
+            id: generateRandomNumber().toString(),
+            title: title,
+            start: getEventDate(),
+            time: 60,
+            color: color,
+            description: description,
+            done: false,
+            icon: icon
+        }
+        if(eventData.title.length > 0){
+            sendEventToServer(eventData)
         } else {
             alert('provide title!')
+        }
+    }
+
+    async function sendEventToServer(eventData: ItemInterface) {
+    
+        try {
+            const response = await axios.post(`${serverUrl}/events`, eventData);
+    
+            if (response.status === 201) {
+                dispatch(AddEventActionCreator(eventData))
+                setDisplay()
+                setTitle('')
+                setStart({hour: 12, minute: 0, id: ''})
+                setColor('rgba(155, 155, 155, 0.5)')
+                setIcon('./changeIcon/coffee.png')
+                setDescription('')
+                dispatch(UpdateDateActionCreator(date))
+            } else {
+                console.error('event error');
+            }
+        } catch (error) {
+            console.error('error', error);
         }
     }
 
@@ -153,7 +171,7 @@ const AddEvent: React.FC<Props> = ({display, setDisplay, date}) => {
                     style={styles.addEvent__text}
                 />
                 <TouchableOpacity
-                    onPress={AddEvent}
+                    onPress={addEvent}
                     style={styles.addEvent__submit}
                 >
                     <Text

@@ -41,7 +41,9 @@ const EventItem: React.FC<Props> = ({item, getEventInfo}) => {
                     >
                         <Image
                             style={styles.eventIcon}
-                            source={require('./coffee.png')}
+                            source={{
+                                uri: `http://localhost:4000/${item.icon}`
+                            }}
                         />
                     </View>
                     <Text style={styles.eventItem__title}>

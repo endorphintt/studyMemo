@@ -1,5 +1,6 @@
 import { ItemInterface } from './../components/calendar/calendarContent/events/eventItem/eventItem';
 
+const SET_STATE = 'SET_STATE'
 const UPDATE_DATE = 'UPDATE_DATE'
 const UPDATE_PROGRESS = 'UPDATE_PROGRESS'
 const ADD_EVENT = 'ADD_EVENT'
@@ -16,46 +17,6 @@ export interface EventPage {
 
 const initilState: EventState = {
     eventItems: [
-        {
-            id: '1',
-            done: false,
-            title: 'buy milk',
-            start: new Date(2023, 7, 23, 8, 15),
-            time: 60,
-            color: 'rgba(222, 36, 36, 0.4)',
-            icon: './coffee.png',
-            description: '1 litr'
-        },
-        {
-            id: '7',
-            title: 'THU',
-            done: false,
-            start: new Date(2023, 7, 23, 6, 15),
-            time: 30,
-            color: 'rgba(36, 55, 222, 0.4)',
-            icon: './coffee.png',
-            description: '1 litr'
-        },
-        {
-            id: '8',
-            title: 'Tuesday',
-            done: false,
-            start: new Date(2023, 7, 23, 10, 15),
-            time: 80,
-            color: 'rgba(222, 36, 203, 0.4)',
-            icon: './coffee.png',
-            description: '1 litr'
-        },
-        {
-            id: '10',
-            title: 'Tuesday',
-            done: false,
-            start: new Date(2023, 7, 24, 12, 15),
-            time: 60,
-            color: 'rgba(222, 192, 36, 0.4)',
-            description: '1 litr',
-            icon: './coffee.png',
-        },
     ],
     eventActiveItems: [
     ]
@@ -64,6 +25,12 @@ const initilState: EventState = {
 const eventReducer = (state = initilState, action: { type: string, payload: any }) => {
     let newState;
     switch(action.type) {
+        case SET_STATE:
+            const NewState = {
+                eventItems: action.payload,
+                eventActiveItems: []
+            }
+            return NewState
         case UPDATE_DATE:
             const newEventActiveItems = state.eventItems.filter(item => {
                 const itemDate = new Date(item.start);
@@ -110,6 +77,13 @@ const eventReducer = (state = initilState, action: { type: string, payload: any 
             return state;
         
     }
+}
+
+export const setStateActionCreator = (state: ItemInterface[]) => {
+    return ({
+        type: SET_STATE,
+        payload: state,
+    })
 }
 
 export const UpdateDateActionCreator = (date: Date) => {

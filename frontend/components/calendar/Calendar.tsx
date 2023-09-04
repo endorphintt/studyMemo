@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { getStatusBarHeight } from 'react-native-status-bar-height'
 import CalendarHeader from "./calendarHeader/CalendarHeader";
 import { useState } from "react";
