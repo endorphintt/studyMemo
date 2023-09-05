@@ -47,6 +47,21 @@ const EventControllers = {
             res.status(500).json({ error: 'Error deleting event' });
         }
     },
+    toggleDone: async (req, res) => {
+        const eventId = req.params.id; 
+        try {
+            const event = await Event.findByPk(eventId);
+            if (!event) {
+                return res.status(404).json({ error: 'Event not found' });
+            }
+            event.done = !event.done;
+            await event.save();
+            res.status(200).json(event);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error toggling done status' });
+        }
+    },
 };
 
 module.exports = EventControllers

@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native"
 import { useDispatch } from "react-redux";
 import { UpdateProgressActionCreator } from "../../../../../redux/eventReducer";
+import axios from "axios";
 
 export interface ItemInterface {
     id: string;
@@ -24,6 +25,24 @@ const EventItem: React.FC<Props> = ({item, getEventInfo}) => {
  
     const buttonIsDone = (id: string) => {
         dispatch(UpdateProgressActionCreator(id))
+        const changeDone = async (id: string) => {
+            const serverUrl = `http://localhost:4000/events/${id}/toggleDone`;
+          
+            try {
+              const response = await axios.put(serverUrl);
+          
+              if (response.status === 200) {
+                console.log('done')
+              } else {
+                dispatch(UpdateProgressActionCreator(id))
+                console.error('error on server');
+              }
+            } catch (error) {
+              console.error('error during fetching', error);
+              dispatch(UpdateProgressActionCreator(id))
+            }
+        };
+        changeDone(id)        
     }
 
     return(
@@ -145,3 +164,7 @@ const styles = StyleSheet.create({
 })
 
 export default EventItem;
+
+function fetchData() {
+    throw new Error("Function not implemented.");
+}

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { View, Text, StyleSheet, PanResponder, TouchableOpacity} from 'react-native'
 import { useSelector } from 'react-redux'
-import { reducers } from '../../../../redux/redux_store';
 import { ItemInterface } from '../events/eventItem/eventItem';
 import { EventPage, setStateActionCreator } from '../../../../redux/eventReducer';
 import { useEffect } from 'react';
@@ -18,7 +17,10 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
     const [items, setItems] = useState<ItemInterface[]>([])
     const [isLoading, setIsLoading] = useState(true)
     const dispatch = useDispatch()
-    const loaded = false
+
+    const loaded = true
+
+    const gotItems = useSelector((state: EventPage) => state.eventComponent.eventActiveItems)
 
     useEffect(() => {
         fetchData()
@@ -34,7 +36,6 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                 const events = response.data;
                 dispatch(setStateActionCreator(events))
                 setItems(StringToDate(events))
-                console.log(StringToDate(events))
                 setIsLoading(false)
             } else {
                 console.error('Помилка при отриманні списку подій.');
@@ -121,8 +122,8 @@ const CalendarSwiper: React.FC<Props> = ({date, setDate}) => {
                     </View>
                 )}
         return null;
-        });
-      };
+        })
+    }
       
 
     return (

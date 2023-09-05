@@ -1,9 +1,10 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native"
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
-import { DeleteEventActionCreator, UpdateDateActionCreator } from "../../../../redux/eventReducer";
+import { AddEventActionCreator, DeleteEventActionCreator, UpdateDateActionCreator } from "../../../../redux/eventReducer";
 import EventItem, { ItemInterface } from "./eventItem/eventItem";
 import { EventPage } from "../../../../redux/eventReducer";
+import axios from "axios";
 
 type Props = {
     date: Date;
@@ -40,10 +41,30 @@ const Events: React.FC<Props> = ({date, setAddEvent}) => {
         return arr;
     }
 
-    const deleteEventItem = (id: string) => {
-        dispatch(DeleteEventActionCreator(id))
+    const deleteEventItem = (item: any) => {
+        dispatch(DeleteEventActionCreator(item.id))
         setEventInfoDisplay(false)
         dispatch(UpdateDateActionCreator(date))
+
+        const deleteEventById = async (item: any, date: Date) => {
+            const serverUrl = `http://localhost:4000/events/${item.id}`;
+          
+            try {
+              const response = await axios.delete(serverUrl);         
+              if (response.status === 204) {
+                console.log('deleted')                
+                } else {
+                    console.error('error on server');
+                    dispatch(AddEventActionCreator(item))
+                    dispatch(UpdateDateActionCreator(date))
+                }
+            } catch (error) {
+                console.error('error during fetching:', error);
+                dispatch(AddEventActionCreator(item))
+                dispatch(UpdateDateActionCreator(date))
+            }
+        };
+        deleteEventById(item, date)
     }
 
     const activeSortedItems = activeItems? bubbleSort(activeItems) : activeItems
@@ -81,7 +102,7 @@ const Events: React.FC<Props> = ({date, setAddEvent}) => {
                     <Text style={styles.eventInfoItem__start}>{eventInfoItem.start.getHours()}:{eventInfoItem?.start.getMinutes()}</Text>
                     <Text style={styles.eventInfoItem__description}>{eventInfoItem.description}</Text>
                     <TouchableOpacity
-                        onPress={() => deleteEventItem(eventInfoItem.id)}
+                        onPress={() => deleteEventItem(eventInfoItem)}
                         style={styles.eventItem__delete}
                     >
                         <Image
